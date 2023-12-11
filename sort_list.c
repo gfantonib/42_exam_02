@@ -103,21 +103,19 @@ t_list	*sort_list(t_list* lst, int (*cmp)(int, int))
 	
 
 	tmp = lst;
-	while (lst->next != NULL)
+	while (tmp->next != NULL)
 	{
-		if ((*cmp)(lst->data, lst->next->data) == 0)
+		if ((*cmp)(tmp->data, tmp->next->data) == 0)
 		{
-			aux = lst->next->data;
-			lst->next->data = lst->data;
-			lst->data = aux;
-			lst = tmp;
+			aux = tmp->next->data;
+			tmp->next->data = tmp->data;
+			tmp->data = aux;
+			tmp = lst;
 		}
 		else
-			lst = lst->next;
+			tmp = tmp->next;
 	}
-	lst = tmp;
 	return (lst);
-
 }
 
 int cmp(int a, int b)

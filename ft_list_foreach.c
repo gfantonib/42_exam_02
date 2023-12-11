@@ -1,26 +1,27 @@
-// Assignment name  : ft_list_remove_if
-// Expected files   : ft_list_remove_if.c
-// Allowed functions: free
+// Assignment name  : ft_list_foreach
+// Expected files   : ft_list_foreach.c, ft_list.h
+// Allowed functions: 
 // --------------------------------------------------------------------------------
 
-// Write a function called ft_list_remove_if that removes from the
-// passed list any element the data of which is "equal" to the reference data.
+// Write a function that takes a list and a function pointer, and applies this
+// function to each element of the list.
 
-// It will be declared as follows :
+// It must be declared as follows:
 
-// void ft_list_remove_if(t_list **begin_list, void *data_ref, int (*cmp)());
+// void    ft_list_foreach(t_list *begin_list, void (*f)(void *));
 
-// cmp takes two void* and returns 0 when both parameters are equal.
+// The function pointed to by f will be used as follows:
 
-// You have to use the ft_list.h file, which will contain:
+// (*f)(list_ptr->data);
 
-// $>cat ft_list.h
-// typedef struct      s_list
+// You must use the following structure, and turn it in as a file called
+// ft_list.h:
+
+// typedef struct    s_list
 // {
-//     struct s_list   *next;
-//     void            *data;
-// }                   t_list;
-// $>
+//     struct s_list *next;
+//     void          *data;
+// }                 t_list;
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -89,48 +90,39 @@ void free_list(t_list *head) {
     }
 }
 // ----------------------------------------------------------------------------
-void ft_list_remove_if(t_list **begin_list, void *data_ref, int (*cmp)())
+
+void    ft_list_foreach(t_list *begin_list, void (*f)(void *))
 {
-	if (*begin_list == NULL || begin_list == NULL)
-		return ;
+	t_list *list_ptr = begin_list;
 
-	t_list	*cur = *begin_list;	
-
-	if ((*cmp)(cur->data, data_ref) == 0)
+	while (list_ptr)
 	{
-		*begin_list = cur->next;
-		free(cur);
-		ft_list_remove_if(begin_list, data_ref, cmp);
-	}
-	else
-	{
-		cur = *begin_list;
-		ft_list_remove_if(&cur->next, data_ref, cmp);
+		f(list_ptr->data);
+		list_ptr = list_ptr->next;
 	}
 
 }
 
-int	cmp(void *arg1, void *arg2)
+void	cmp(void *arg1)
 {
-	char *str1 = arg1;
-	char *str2 = arg2;
+	char *str = arg1;
 	int	i;
 
 	i = 0;
-	while (str1[i])
+	while (str[i])
 	{
-		if (str1[i] != str2[i])
-			return (1);
+		printf("%c", str[i]+1);
+		//str[i] = 'z';
 		i++;
 	}
-	return (0);
+	printf(" ");
+	
 }
 
 // ----------------------------------------------------------------------------
-int main() {
+int main() 
+{
     t_list *list = NULL; // Initialize an empty list
-
-	char *ref = "ccc";
 
     // Insert some elements into the list
     insert_end(&list, "aaa");
@@ -142,8 +134,9 @@ int main() {
     // Print the elements of the list
     printf("Linked List: ");
     print_list(list);
-	ft_list_remove_if(&list, ref, cmp);
-	printf("Remove If List: ");
+	ft_list_foreach(list, cmp);
+	printf("\n");
+	printf("For Each List: ");
     print_list(list);
 
     // Free the memory allocated for the list
